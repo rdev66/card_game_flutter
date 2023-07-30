@@ -2,6 +2,7 @@ import 'package:card_game/components/card_list.dart';
 import 'package:card_game/components/deck_pile.dart';
 import 'package:card_game/components/discard_pile.dart';
 import 'package:card_game/models/card_model.dart';
+import 'package:card_game/providers/carzy_eights_game_provider.dart';
 import 'package:card_game/providers/game_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +18,7 @@ class GameBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GameProvider>(builder: (context, model, child) {
+    return Consumer<CrazyEightsGameProvider>(builder: (context, model, child) {
       return model.currentDeck != null
           ? Stack(
               children: [
@@ -72,7 +73,6 @@ class GameBoard extends StatelessWidget {
                       CardList(
                         player: model.players[0],
                         onPlayCard: (CardModel card) {
-                          //print(card.value);
                           model.playCard(player: model.players[0], card: card);
                         },
                       ),

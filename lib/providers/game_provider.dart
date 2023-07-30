@@ -1,3 +1,4 @@
+import 'package:card_game/constants.dart';
 import 'package:card_game/services/deck_service.dart';
 import 'package:flutter/material.dart';
 
@@ -6,10 +7,12 @@ import '../models/deck_model.dart';
 import '../models/player_model.dart';
 import '../models/turn_model.dart';
 
-class GameProvider with ChangeNotifier {
+abstract class GameProvider with ChangeNotifier {
   GameProvider() {
     _service = DeckService();
   }
+
+  final Map<String, dynamic> gameState = {};
 
   late DeckService _service;
 
@@ -28,7 +31,6 @@ class GameProvider with ChangeNotifier {
 
   CardModel? get discardTop => _discards.isNotEmpty ? _discards.last : null;
 
-  final Map<String, dynamic> _gameState = {};
 
   Future<void> newGame(List<PlayerModel> players) async {
     final deck = await _service.newDeck();
@@ -41,18 +43,34 @@ class GameProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> drawCards(PlayerModel player, {int count = 1}) async {
+    void setLastPlayed(CardModel card) {
+    gameState[GS_LAST_SUIT] = card.suit;
+    gameState[GS_LAST_VALUE] = card.value;
+  }
+
+  Future<void> drawCards(PlayerModel player,
+      {int count = 1, allowAnyTime = false}) async {
     if (_currentDeck == null) {
       return;
     }
+    if (!allowAnyTime && !canDrawCard) return;
 
     final draw = await _service.draw(_currentDeck!.deck_id, count: count);
 
     player.addCards(draw.cards);
 
-    _turn.drawCount += count;
     _currentDeck!.remaining = draw.remaining;
+    _turn.drawCount += count;
 
+    notifyListeners();
+  }
+
+  Future<void> drawCardToDiscardPile({int count = 1}) async {
+    final draw = await _service.draw(_currentDeck!.deck_id, count: count);
+
+    _discards = [..._discards, ...draw.cards];
+
+    _currentDeck!.remaining = draw.remaining;
     notifyListeners();
   }
 
@@ -65,12 +83,15 @@ class GameProvider with ChangeNotifier {
 
     await applyCardSideEffects(card);
     _turn.actionCount++;
+
+    setLastPlayed(card);
+
     notifyListeners();
   }
 
-  Future<void> revertDiscardedCard({required PlayerModel player, required CardModel card}) async {
-
-        if (!canPlayCard(card)) return;
+  Future<void> revertDiscardedCard(
+      {required PlayerModel player, required CardModel card}) async {
+    if (!canPlayCard(card)) return;
 
     _discards.remove(card);
     player.addCards([card]);
@@ -86,6 +107,10 @@ class GameProvider with ChangeNotifier {
     if (card.value == "JACK") {
       await drawCards(_turn.currentPlayer, count: 2);
     }
+  }
+
+  bool get canDrawCard {
+    return turn.drawCount < 1;
   }
 
   bool get canEndTurn {
@@ -104,6 +129,16 @@ class GameProvider with ChangeNotifier {
     await Future.delayed(const Duration(milliseconds: 500));
     await drawCards(_turn.currentPlayer);
     await Future.delayed(const Duration(milliseconds: 500));
+
+    if (_turn.currentPlayer.cards.isEmpty) {
+      return;
+    }
+
+    await Future.delayed(const Duration(milliseconds: 1000));
+
+    playCard(
+        player: _turn.currentPlayer, card: _turn.currentPlayer.cards.first);
+
     if (canEndTurn) {
       endTurn();
     }

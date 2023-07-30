@@ -1,11 +1,11 @@
 import 'package:card_game/components/game_screen.dart';
-import 'package:card_game/providers/game_provider.dart';
+import 'package:card_game/providers/carzy_eights_game_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   runApp(MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => GameProvider())],
+      providers: [ChangeNotifierProvider(create: (_) => CrazyEightsGameProvider())],
       child: const MyApp()));
 }
 
