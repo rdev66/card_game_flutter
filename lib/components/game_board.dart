@@ -3,7 +3,6 @@ import 'package:card_game/components/deck_pile.dart';
 import 'package:card_game/components/discard_pile.dart';
 import 'package:card_game/models/card_model.dart';
 import 'package:card_game/providers/carzy_eights_game_provider.dart';
-import 'package:card_game/providers/game_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/player_model.dart';
@@ -24,20 +23,30 @@ class GameBoard extends StatelessWidget {
               children: [
                 Align(
                     alignment: Alignment.center,
-                    child: Row(
+                    child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        GestureDetector(
-                            onTap: () async {
-                              await model.drawCards(model.turn.currentPlayer);
-                            },
-                            child: DeckPile(
-                                remaining: model.currentDeck!.remaining)),
-                        const SizedBox(width: 8),
-                        DiscardPile(cards: model.discards,
-                          onPlayCard: (CardModel card) {
-                          model.revertDiscardedCard(player: model.players[0], card: card);
-                        }, )
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            GestureDetector(
+                                onTap: () async {
+                                  await model
+                                      .drawCards(model.turn.currentPlayer);
+                                },
+                                child: DeckPile(
+                                    remaining: model.currentDeck!.remaining)),
+                            const SizedBox(width: 8),
+                            DiscardPile(
+                              cards: model.discards,
+                              onPlayCard: (CardModel card) {
+                                model.revertDiscardedCard(
+                                    player: model.players[0], card: card);
+                              },
+                            )
+                          ],
+                        ),
+                        if (model.bottomWidget != null) model.bottomWidget!,
                       ],
                     )),
                 Align(

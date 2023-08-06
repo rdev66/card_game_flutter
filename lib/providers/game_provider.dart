@@ -1,4 +1,5 @@
 import 'package:card_game/constants.dart';
+import 'package:card_game/main.dart';
 import 'package:card_game/services/deck_service.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,7 @@ abstract class GameProvider with ChangeNotifier {
   }
 
   final Map<String, dynamic> gameState = {};
+  Widget? bottomWidget;
 
   late DeckService _service;
 
@@ -31,7 +33,6 @@ abstract class GameProvider with ChangeNotifier {
 
   CardModel? get discardTop => _discards.isNotEmpty ? _discards.last : null;
 
-
   Future<void> newGame(List<PlayerModel> players) async {
     final deck = await _service.newDeck();
     _currentDeck = deck;
@@ -43,9 +44,22 @@ abstract class GameProvider with ChangeNotifier {
     notifyListeners();
   }
 
-    void setLastPlayed(CardModel card) {
+  void setBottomWidget(Widget? widget) {
+    bottomWidget = widget;
+    notifyListeners();
+  }
+
+  void setTrump(Suit suit) {
+    setBottomWidget(Card(
+        child: Text(CardModel.suitToUnicode(suit),
+            style:
+                TextStyle(fontSize: 24, color: CardModel.suitToColor(suit)))));
+  }
+
+  void setLastPlayed(CardModel card) {
     gameState[GS_LAST_SUIT] = card.suit;
     gameState[GS_LAST_VALUE] = card.value;
+    setTrump(card.suit);
   }
 
   Future<void> drawCards(PlayerModel player,
@@ -76,15 +90,17 @@ abstract class GameProvider with ChangeNotifier {
 
   Future<void> playCard(
       {required PlayerModel player, required CardModel card}) async {
-    if (!canPlayCard(card)) return;
+    if (!canPlayCard(card)) {
+      showToast(message: "You can't play ${card.value} of ${card.suit}.");
+    }
 
     player.removeCard(card);
     _discards.add(card);
 
+    setLastPlayed(card);
+
     await applyCardSideEffects(card);
     _turn.actionCount++;
-
-    setLastPlayed(card);
 
     notifyListeners();
   }
@@ -125,6 +141,12 @@ abstract class GameProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void skipTurn() {
+    _turn.nextTurn();
+    _turn.nextTurn();
+    notifyListeners();
+  }
+
   void botTurn() async {
     await Future.delayed(const Duration(milliseconds: 500));
     await drawCards(_turn.currentPlayer);
@@ -145,4 +167,13 @@ abstract class GameProvider with ChangeNotifier {
   }
 
   Future<void> setupBoard() async {}
+
+  void showToast(
+      {required String message, int seconds = 3, SnackBarAction? action}) {
+    rootScaffoldMessengerKey.currentState!.showSnackBar(SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: seconds),
+      action: action,
+    ));
+  }
 }

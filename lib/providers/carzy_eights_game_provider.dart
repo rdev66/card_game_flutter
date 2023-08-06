@@ -1,6 +1,9 @@
+import 'package:card_game/components/suit_chooser_modal.dart';
 import 'package:card_game/constants.dart';
+import 'package:card_game/main.dart';
 import 'package:card_game/models/card_model.dart';
 import 'package:card_game/providers/game_provider.dart';
+import 'package:flutter/material.dart';
 
 class CrazyEightsGameProvider extends GameProvider {
   @override
@@ -13,13 +16,40 @@ class CrazyEightsGameProvider extends GameProvider {
     setLastPlayed(discardTop!);
   }
 
-  // TODO Here //
   @override
   Future<void> applyCardSideEffects(CardModel card) async {
-    if (card.value == "8") {
+    if (card.value == "8" ||
+        card.value == "7" ||
+        card.value == "6" ||
+        card.value == "5") {
+      Suit suit;
+
       if (turn.currentPlayer.isHuman) {
         //show picker
+        suit = await showDialog(
+            context: navigatoryKey.currentContext!,
+            builder: (_) => const SuitChooserModal(),
+            barrierDismissible: false);
+      } else {
+        suit = turn.currentPlayer.cards.first.suit;
       }
+      gameState[GS_LAST_SUIT] = suit;
+      setTrump(suit);
+      showToast(
+          message:
+              "${turn.currentPlayer.name} has switched to ${CardModel.suitToString(suit)}");
+    } else if (card.value == "2") {
+      await drawCards(turn.otherPlayer, count: 2, allowAnyTime: true);
+      showToast(message: "${turn.otherPlayer.name} draws 2 cards");
+    } else if (card.value == "4") {
+      await drawCards(turn.otherPlayer, count: 4, allowAnyTime: true);
+      showToast(message: "${turn.otherPlayer.name} draws 4 cards");
+    } else if (card.suit == Suit.SPADES && card.value == "QUEEN") {
+      await drawCards(turn.otherPlayer, count: 5, allowAnyTime: true);
+      showToast(message: "${turn.otherPlayer.name} draws 5 cards");
+    } else if (card.value == "JACK") {
+      showToast(message: "${turn.otherPlayer.name} misses a turn");
+      skipTurn();
     }
   }
 

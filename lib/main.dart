@@ -3,6 +3,9 @@ import 'package:card_game/providers/carzy_eights_game_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+final navigatoryKey = GlobalKey<NavigatorState>();
+final rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
 void main() {
   runApp(MultiProvider(
       providers: [ChangeNotifierProvider(create: (_) => CrazyEightsGameProvider())],
@@ -17,6 +20,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Card Game',
+      navigatorKey: navigatoryKey,
+      scaffoldMessengerKey: rootScaffoldMessengerKey,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
