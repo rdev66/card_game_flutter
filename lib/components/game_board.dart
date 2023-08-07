@@ -1,6 +1,7 @@
 import 'package:card_game/components/card_list.dart';
 import 'package:card_game/components/deck_pile.dart';
 import 'package:card_game/components/discard_pile.dart';
+import 'package:card_game/components/player_info.dart';
 import 'package:card_game/models/card_model.dart';
 import 'package:card_game/providers/carzy_eights_game_provider.dart';
 import 'package:flutter/material.dart';
@@ -87,7 +88,7 @@ class GameBoard extends StatelessWidget {
                       ),
                     ],
                   ),
-                )
+                ),PlayerInfo(turn: model.turn)
               ],
             )
           : Container(

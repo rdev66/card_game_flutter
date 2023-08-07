@@ -79,6 +79,19 @@ class CrazyEightsGameProvider extends GameProvider {
   }
 
   @override
+  bool get gameIsOver {
+    if (turn.currentPlayer.cards.isEmpty) {
+      return true;
+    }
+    return false;
+  }
+
+  void finishGame() {
+    showToast(message: "Game over! ${turn.currentPlayer.name} WINS!");
+    notifyListeners();
+  }
+
+  @override
   void botTurn() async {
     final p = turn.currentPlayer;
     final cards = p.cards;
