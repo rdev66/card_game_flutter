@@ -14,6 +14,9 @@ class CrazyEightsGameProvider extends GameProvider {
     await drawCardToDiscardPile();
 
     setLastPlayed(discardTop!);
+
+    turn.drawCount = 0;
+    turn.actionCount = 0;
   }
 
   @override

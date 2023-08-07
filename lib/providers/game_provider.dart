@@ -38,8 +38,8 @@ abstract class GameProvider with ChangeNotifier {
     _currentDeck = deck;
     _players = players;
     _discards = [];
-    _turn = Turn(players: players, currentPlayer: players.first);
     setupBoard();
+    _turn = Turn(players: players, currentPlayer: players.first);
 
     notifyListeners();
   }
