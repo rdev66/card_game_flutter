@@ -21,10 +21,7 @@ class CrazyEightsGameProvider extends GameProvider {
 
   @override
   Future<void> applyCardSideEffects(CardModel card) async {
-    if (card.value == "8" ||
-        card.value == "7" ||
-        card.value == "6" ||
-        card.value == "5") {
+    if (card.value == "8") {
       Suit suit;
 
       if (turn.currentPlayer.isHuman) {
