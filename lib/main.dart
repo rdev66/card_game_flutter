@@ -1,5 +1,5 @@
 import 'package:card_game/components/game_screen.dart';
-import 'package:card_game/providers/carzy_eights_game_provider.dart';
+import 'package:card_game/providers/crazy_eights_game_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,13 +7,13 @@ final navigatoryKey = GlobalKey<NavigatorState>();
 final rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() {
-  runApp(MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => CrazyEightsGameProvider())],
-      child: const MyApp()));
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => CrazyEightsGameProvider())
+  ], child: const GameApp()));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class GameApp extends StatelessWidget {
+  const GameApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -32,4 +32,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
- 

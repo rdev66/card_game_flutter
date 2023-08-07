@@ -126,11 +126,7 @@ abstract class GameProvider with ChangeNotifier {
     return true;
   }
 
-  Future<void> applyCardSideEffects(CardModel card) async {
-    if (card.value == "JACK") {
-      await drawCards(_turn.currentPlayer, count: 2);
-    }
-  }
+  Future<void> applyCardSideEffects(CardModel card) async {  }
 
   bool get canDrawCard {
     return turn.drawCount < 1;

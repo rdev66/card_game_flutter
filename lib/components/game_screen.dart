@@ -1,4 +1,4 @@
-import 'package:card_game/providers/carzy_eights_game_provider.dart';
+import 'package:card_game/providers/crazy_eights_game_provider.dart';
 import 'package:card_game/services/deck_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
