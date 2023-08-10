@@ -8,6 +8,15 @@ import '../models/deck_model.dart';
 import '../models/player_model.dart';
 import '../models/turn_model.dart';
 
+class ActionButton {
+  final String label;
+  final Function() onPressed;
+  bool enabled = true;
+
+  ActionButton(
+      {required this.label, required this.onPressed, required this.enabled});
+}
+
 abstract class GameProvider with ChangeNotifier {
   GameProvider() {
     _service = DeckService();
@@ -15,6 +24,15 @@ abstract class GameProvider with ChangeNotifier {
 
   final Map<String, dynamic> gameState = {};
   Widget? bottomWidget;
+
+  List<ActionButton> additionalButtons = [
+    ActionButton(
+        label: "Test",
+        enabled: true,
+        onPressed: () {
+          print("Hi");
+        })
+  ];
 
   late DeckService _service;
 
@@ -54,6 +72,10 @@ abstract class GameProvider with ChangeNotifier {
         child: Text(CardModel.suitToUnicode(suit),
             style:
                 TextStyle(fontSize: 24, color: CardModel.suitToColor(suit)))));
+  }
+
+  bool get showBottomWidget {
+    return true;
   }
 
   void setLastPlayed(CardModel card) {
@@ -126,7 +148,34 @@ abstract class GameProvider with ChangeNotifier {
     return true;
   }
 
-  Future<void> applyCardSideEffects(CardModel card) async {  }
+  bool canDrawCardsFromDiscardPile({int count = 1}) {
+    if (!canDrawCard) return false;
+
+    return discards.length >= count;
+  }
+
+  void drawCardsFromDiscard(PlayerModel player, [int count = 1]) {
+    if (!canDrawCardsFromDiscardPile(count: count)) return;
+
+    //get the first x cards
+    final start = discards.length - count;
+    final end = discards.length;
+
+    final cards =
+        discards.getRange(discards.length - count, discards.length).toList();
+
+    discards.removeRange(start, end);
+
+    //give them to player
+    player.addCards(cards);
+
+    //increment draw count
+    turn.drawCount += count;
+
+    notifyListeners();
+  }
+
+  Future<void> applyCardSideEffects(CardModel card) async {}
 
   bool get canDrawCard {
     return turn.drawCount < 1;

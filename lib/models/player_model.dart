@@ -4,9 +4,10 @@ class PlayerModel {
   final String name;
   final bool isHuman;
   List<CardModel> cards;
+  int score;
 
   PlayerModel(
-      {required this.name, this.isHuman = false, this.cards = const []});
+      {required this.name, this.isHuman = false, this.cards = const [], this.score = 0});
 
   addCards(List<CardModel> newCards) {
     cards = [...cards, ...newCards];
@@ -19,5 +20,4 @@ class PlayerModel {
   bool get isBot {
     return !isHuman;
   }
-  
 }

@@ -4,6 +4,7 @@ import 'package:card_game/components/discard_pile.dart';
 import 'package:card_game/components/player_info.dart';
 import 'package:card_game/models/card_model.dart';
 import 'package:card_game/providers/crazy_eights_game_provider.dart';
+import 'package:card_game/providers/thirty_one_game_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/player_model.dart';
@@ -18,7 +19,7 @@ class GameBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CrazyEightsGameProvider>(builder: (context, model, child) {
+    return Consumer<ThirtyOneGameProvider>(builder: (context, model, child) {
       return model.currentDeck != null
           ? Stack(
               children: [
@@ -44,10 +45,16 @@ class GameBoard extends StatelessWidget {
                                 model.revertDiscardedCard(
                                     player: model.players[0], card: card);
                               },
+                              onPressed: (CardModel card) {
+                                model.drawCardsFromDiscard(
+                                    model.turn.currentPlayer);
+                              },
                             )
                           ],
                         ),
-                        if (model.bottomWidget != null) model.bottomWidget!,
+                        if (model.bottomWidget != null &&
+                            model.showBottomWidget)
+                          model.bottomWidget!,
                       ],
                     )),
                 Align(
@@ -63,9 +70,18 @@ class GameBoard extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Row(
+                        child: model.turn.currentPlayer == model.players[0] ? Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
+                            ...model.additionalButtons
+                                .map((button) => Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 4.0),
+                                      child: ElevatedButton(
+                                          onPressed: button.enabled ? button.onPressed : null,
+                                          child: Text(button.label)),
+                                    ))
+                                .toList(),
                             if (model.turn.currentPlayer == model.players[0])
                               ElevatedButton(
                                   onPressed: model.canEndTurn
@@ -75,7 +91,7 @@ class GameBoard extends StatelessWidget {
                                       : null,
                                   child: const Text("End Turn"))
                           ],
-                        ),
+                        ): Container(),
                       ),
                       const SizedBox(
                         height: 8,
@@ -88,7 +104,8 @@ class GameBoard extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),PlayerInfo(turn: model.turn)
+                ),
+                PlayerInfo(turn: model.turn)
               ],
             )
           : Container(

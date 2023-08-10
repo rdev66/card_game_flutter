@@ -1,6 +1,8 @@
 import 'package:card_game/components/card_back.dart';
 import 'package:flutter/material.dart';
 
+import '../models/card_model.dart';
+
 class DeckPile extends StatelessWidget {
   final int remaining;
   final double size;

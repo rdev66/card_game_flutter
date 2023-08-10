@@ -1,4 +1,5 @@
 import 'package:card_game/providers/crazy_eights_game_provider.dart';
+import 'package:card_game/providers/thirty_one_game_provider.dart';
 import 'package:card_game/services/deck_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,8 +18,12 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen> {
   //Only access onPress new game; no subscription
-  late final CrazyEightsGameProvider _gameProvider =
-      Provider.of<CrazyEightsGameProvider>(context, listen: false);
+
+  //late final CrazyEightsGameProvider _gameProvider =
+  //    Provider.of<CrazyEightsGameProvider>(context, listen: false);
+
+  late final ThirtyOneGameProvider _gameProvider =
+      Provider.of<ThirtyOneGameProvider>(context, listen: false);
 
   @override
   void initState() {

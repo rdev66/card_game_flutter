@@ -3,3 +3,4 @@ const CARD_HEIGHT = 314 / 2;
 
 const GS_LAST_SUIT = 'GS_LAST_SUIT';
 const GS_LAST_VALUE = 'GS_LAST_VALUE';
+
