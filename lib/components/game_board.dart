@@ -78,7 +78,7 @@ class GameBoard extends StatelessWidget {
                                       padding:
                                           const EdgeInsets.only(right: 4.0),
                                       child: ElevatedButton(
-                                          onPressed: button.enabled ? button.onPressed : null,
+                                          onPressed: button.enabled ? button.onPressed() : null,
                                           child: Text(button.label)),
                                     ))
                                 .toList(),

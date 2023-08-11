@@ -83,7 +83,7 @@ class ThirtyOneGameProvider extends GameProvider {
       }
       p.score = points;
 
-      print("{p.name} - {p.score}");
+      print("${p.name} - ${p.score}");
 
       print("spades: $spadesPoints");
       print("hearts: $heartsPoints");
@@ -117,12 +117,13 @@ class ThirtyOneGameProvider extends GameProvider {
   get additionalButtons {
     return [
       ActionButton(
-          label: "Knock",
+          label: "Knock!",
+          enabled: true,
           onPressed: () => () {
+            print("Knock");
                 gameState[PLAYER_HAS_KNOCKED] = turn.currentPlayer;
                 endTurn();
-              },
-          enabled: true),
+              })
     ];
   }
 }

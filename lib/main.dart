@@ -10,7 +10,7 @@ final rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() {
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_) => CrazyEightsGameProvider()),
+   // ChangeNotifierProvider(create: (_) => CrazyEightsGameProvider()),
     ChangeNotifierProvider(create: (_) => ThirtyOneGameProvider())
   ], child: const GameApp()));
 }
