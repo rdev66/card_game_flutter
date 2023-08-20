@@ -2,7 +2,7 @@ name: Flutter for Android 2
 
 on:
   push:
-    branches: [ master ]
+    branches: [ develop ]
   pull_request:
     branches: [ master ]
 
